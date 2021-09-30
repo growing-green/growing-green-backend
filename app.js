@@ -1,36 +1,38 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
+const { NotFoundError } = require('./lib/errors');
+const httpStatusCodes = require('./lib/httpStatusCodes');
+const { ERROR_MESSAGES } = require('./constants');
 
-var app = express();
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "pug");
+const app = express();
 
-app.use(logger("dev"));
+app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
 
 app.use(function (req, res, next) {
-  next(createError(404));
+  next(new NotFoundError());
 });
 
 app.use(function (err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  console.error(err);
 
-  res.status(err.status || 500);
-  res.render("error");
+  const statusCode = err.statusCode || httpStatusCodes.INTERNAL_SERVER;
+
+  res.status(statusCode).json({
+    result: 'error',
+    message: err.message || ERROR_MESSAGES.INTERNAL_SERVER,
+  });
 });
 
 module.exports = app;
