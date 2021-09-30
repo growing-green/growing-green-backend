@@ -5,28 +5,14 @@
     "node": true,
     "jest": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@next/next/recommended",
-    "plugin:prettier/recommended"
-  ],
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  },
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
   "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "react-hooks", "prettier"],
+  "plugins": ["prettier"],
   "rules": {
-    "react/react-in-jsx-scope": 0,
-    "no-nested-ternary": 0,
-    "no-console": 1
+    "no-console": "off",
+    "quotes": [2, "single"]
   }
 }
