@@ -43,11 +43,8 @@ exports.getLoginOrSingUp = async (req, res, next) => {
     const token = await jwt.sign(user, tokenSecretKey, option);
 
     return res.status(201).json({
-      result: 'success',
-      data: {
-        token,
-        user,
-      },
+      token,
+      user,
     });
   } catch {
     next(new BadRequestError('로그인에 실패했습니다.'));
