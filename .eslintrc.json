@@ -13,6 +13,12 @@
   "plugins": ["prettier"],
   "rules": {
     "no-console": "off",
-    "quotes": [2, "single"]
+    "quotes": [2, "single"],
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
   }
 }
