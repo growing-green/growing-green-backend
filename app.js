@@ -1,5 +1,5 @@
-const createError = require('http-errors');
 const express = require('express');
+const initialLoaders = require('./loader');
 const path = require('path');
 const logger = require('morgan');
 
@@ -11,6 +11,8 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 const app = express();
+
+initialLoaders(app);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -24,6 +26,7 @@ app.use(function (req, res, next) {
   next(new NotFoundError());
 });
 
+// eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, next) {
   console.error(err);
 

@@ -7,10 +7,11 @@ const {
   TokenExpiredError,
 } = require('../lib/errors');
 
-exports.getLoginOrSingUp = async (req, res) => {
+exports.getLoginOrSingUp = async (req, res, next) => {
   try {
     const { email, name, photo_url } = req.body;
     const targetUser = await User.findOne({ email });
+    const user = {};
 
     if (!targetUser) {
       const newUser = await User.create({
@@ -20,33 +21,30 @@ exports.getLoginOrSingUp = async (req, res) => {
         last_login_date: new Date(),
       });
 
+      user._id = newUser._id.toJSON();
+      user.name = newUser.name;
+      user.email = newUser.email;
+      user.photo_url = newUser.photo_url;
+
       if (!newUser) {
         return next(new BadRequestError('회원가입에 실패했습니다.'));
       }
-
-      const option = { expiresIn: '1d', issuer: 'eunbin' };
-      const token = jwt.sign(newUser, tokenSecretKey, option);
-
-      return res.status(201).json({
-        result: 'success',
-        data: {
-          token,
-          user: newUser,
-        },
-      });
     }
 
     targetUser.last_login_date = new Date();
     await targetUser.save();
 
-    const token = jwt.sign(targetUser, tokenSecretKey, option);
+    user._id = targetUser._id.toJSON();
+    user.name = targetUser.name;
+    user.email = targetUser.email;
+    user.photo_url = targetUser.photo_url;
 
-    return res.status(200).json({
-      result: 'success',
-      data: {
-        token,
-        user: targetUser,
-      },
+    const option = { expiresIn: '1d', issuer: 'eunbin' };
+    const token = await jwt.sign(user, tokenSecretKey, option);
+
+    return res.status(201).json({
+      token,
+      user,
     });
   } catch {
     next(new BadRequestError('로그인에 실패했습니다.'));
