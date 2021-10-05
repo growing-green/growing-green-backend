@@ -12,6 +12,7 @@
   },
   "plugins": ["prettier"],
   "rules": {
+    "no-useless-escape": "off",
     "no-console": "off",
     "quotes": [2, "single"],
     "prettier/prettier": [
