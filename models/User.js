@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, 'Email is required'],
-    match: /.+\@.+\..+/,
+    match: [/.+\@.+@..+/, 'Invalid email'],
     trim: true,
     minlength: [1, 'Email must be at least 1 chars'],
     maxLength: [128, 'Email cannot be more than 128 chars'],
