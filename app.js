@@ -8,6 +8,7 @@ const httpStatusCodes = require('./lib/httpStatusCodes');
 const { ERROR_MESSAGES } = require('./constants');
 
 const usersRouter = require('./routes/users');
+const plantsRouter = require('./routes/plants');
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/users', usersRouter);
+app.use('/plants', plantsRouter);
 
 app.use(function (req, res, next) {
   next(new NotFoundError());

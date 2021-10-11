@@ -24,47 +24,36 @@ exports.getLoginOrSingUp = async (req, res, next) => {
       user._id = newUser._id.toJSON();
       user.name = newUser.name;
       user.email = newUser.email;
-      user.photo_url = newUser.photo_url;
+      user.photoURL = newUser.photo_url;
+      user.last_login_date = new Date();
 
       if (!newUser) {
         return next(new BadRequestError('회원가입에 실패했습니다.'));
       }
+
+      const token = jwt.sign(user, tokenSecretKey);
+
+      return res.status(201).json({
+        token,
+        user,
+      });
+    } else {
+      targetUser.last_login_date = new Date();
+      await targetUser.save();
+
+      user._id = targetUser._id.toJSON();
+      user.name = targetUser.name;
+      user.email = targetUser.email;
+      user.photoURL = targetUser.photo_url;
+
+      const token = jwt.sign(user, tokenSecretKey);
+
+      return res.status(201).json({
+        token,
+        user,
+      });
     }
-
-    targetUser.last_login_date = new Date();
-    await targetUser.save();
-
-    user._id = targetUser._id.toJSON();
-    user.name = targetUser.name;
-    user.email = targetUser.email;
-    user.photo_url = targetUser.photo_url;
-
-    const option = { expiresIn: '1d', issuer: 'eunbin' };
-    const token = await jwt.sign(user, tokenSecretKey, option);
-
-    return res.status(201).json({
-      token,
-      user,
-    });
   } catch {
     next(new BadRequestError('로그인에 실패했습니다.'));
-  }
-};
-
-exports.getAuth = async (req, res, next) => {
-  if (!req.headers.authorization) {
-    return next(new InvalidTokenError());
-  }
-  try {
-    const token = req.headers.authorization.split(' ')[1];
-    const payload = await jwt.verify(token, tokenSecretKey);
-
-    return res.status(200).json({ user: payload });
-  } catch (err) {
-    if (err.name === 'TokenExpiredError') {
-      next(new TokenExpiredError());
-    }
-
-    next(new InvalidTokenError());
   }
 };

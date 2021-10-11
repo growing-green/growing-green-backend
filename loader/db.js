@@ -3,7 +3,9 @@ const { databaseURL } = require('../configs');
 
 function connectMongoDB() {
   const db = mongoose.connection;
-  mongoose.connect(databaseURL);
+  mongoose.connect(databaseURL, {
+    autoIndex: true,
+  });
 
   db.on('error', function () {
     console.log('Disconnected to database...');
