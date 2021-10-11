@@ -1,5 +1,10 @@
 const Plant = require('../models/Plant');
-const { BaseError, BadRequestError } = require('../lib/errors');
+const {
+  BaseError,
+  BadRequestError,
+  InvalidTokenError,
+  TokenExpiredError,
+} = require('../lib/errors');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const { tokenSecretKey } = require('../configs');
@@ -11,8 +16,12 @@ exports.getAllPlantsById = async (req, res, next) => {
     const plants = await Plant.find({ userId: _id }).lean();
 
     return res.status(201).json(plants);
-  } catch {
-    next(new BaseError());
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      return next(new TokenExpiredError());
+    }
+
+    next(new InvalidTokenError());
   }
 };
 
