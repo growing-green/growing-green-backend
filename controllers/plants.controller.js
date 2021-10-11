@@ -76,12 +76,7 @@ exports.updatePlant = async (req, res, next) => {
   try {
     const { plantId } = req.params;
     const { state, isIncrease } = req.body;
-
-    if (!mongoose.Types.ObjectId.isValid(plantId)) {
-      return next(new BadRequestError());
-    }
-
-    const targetPlant = await Plant.findById(plantId).lean();
+    const targetPlant = await Plant.findOne({ _id: plantId });
 
     if (!targetPlant) {
       return next(new BaseError());
@@ -120,11 +115,9 @@ exports.updatePlant = async (req, res, next) => {
 
       case 'penalty': {
         if (isIncrease === true) {
-          targetPlant.penalty_points.current_guage =
-            targetPlant.penalty_points.current_guage + 1;
+          targetPlant.penalty_points = targetPlant.penalty_points + 1;
         } else {
-          targetPlant.penalty_points.current_guage =
-            targetPlant.penalty_points.current_guage - 1;
+          targetPlant.penalty_points = targetPlant.penalty_points - 1;
         }
 
         break;
@@ -133,8 +126,9 @@ exports.updatePlant = async (req, res, next) => {
 
     await targetPlant.save();
 
-    return res.status(201);
+    return res.status(201).json({ plant: targetPlant });
   } catch (err) {
+    console.log(err);
     if (err instanceof mongoose.Error.ValidationError) {
       return next(new BadRequestError('유효하지 않은 데이터입니다.'));
     }

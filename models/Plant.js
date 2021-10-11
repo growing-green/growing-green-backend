@@ -14,9 +14,6 @@ const sunGuageSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'Current score is required'],
     default: 0,
-    max: () => {
-      return this.default_guage;
-    },
   },
   full_date: {
     type: Date,
