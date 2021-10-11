@@ -34,30 +34,10 @@ exports.createNewPlant = async (req, res, next) => {
     return next(new BadRequestError('식물 데이터가 유효하지 않습니다.'));
   }
 
-  const {
-    name,
-    type,
-    species,
-    isSunPlant,
-    growthStage,
-    defaultSunGuage,
-    defaultWaterGuage,
-  } = newPlant;
-
   try {
     const plant = await Plant.create({
       userId: _id,
-      name,
-      species,
-      type,
-      growth_stage: growthStage,
-      is_sun_plant: isSunPlant,
-      sun_guage: {
-        default_guage: defaultSunGuage,
-      },
-      watering_guage: {
-        default_guage: defaultWaterGuage,
-      },
+      newPlant,
     });
 
     res.json({
@@ -76,6 +56,7 @@ exports.updatePlant = async (req, res, next) => {
   try {
     const { plantId } = req.params;
     const { state, isIncrease } = req.body;
+    console.log(state, isIncrease);
     const targetPlant = await Plant.findOne({ _id: plantId });
 
     if (!targetPlant) {
@@ -128,7 +109,6 @@ exports.updatePlant = async (req, res, next) => {
 
     return res.status(201).json({ plant: targetPlant });
   } catch (err) {
-    console.log(err);
     if (err instanceof mongoose.Error.ValidationError) {
       return next(new BadRequestError('유효하지 않은 데이터입니다.'));
     }
