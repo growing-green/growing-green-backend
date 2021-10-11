@@ -1,10 +1,14 @@
 const Plant = require('../models/Plant');
 const { BaseError, BadRequestError } = require('../lib/errors');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const { tokenSecretKey } = require('../configs');
 
-exports.getAllPlants = async (req, res, next) => {
+exports.getAllPlantsById = async (req, res, next) => {
   try {
-    const plants = await Plant.find().lean();
+    const token = req.headers.authorization.split(' ')[1];
+    const { _id } = await jwt.verify(token, tokenSecretKey);
+    const plants = await Plant.find({ userId: _id }).lean();
 
     return res.status(201).json(plants);
   } catch {
