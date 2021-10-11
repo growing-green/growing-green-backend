@@ -61,7 +61,7 @@ const plantSchema = new mongoose.Schema(
       type: String,
       required: [true, 'plant Type is required'],
     },
-    isBlindUp: {
+    is_blind_up: {
       type: Boolean,
       default: true,
     },
@@ -76,7 +76,7 @@ const plantSchema = new mongoose.Schema(
       min: [0, 'Penalty points should be more than 1'],
       max: [10, 'Penalty points should be less than 10'],
     },
-    is_sunplant: {
+    is_sun_plant: {
       type: Boolean,
       default: true,
       required: [true, 'Lighting environment is required'],
