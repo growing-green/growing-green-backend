@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, 'Email is required'],
-    match: [/.+\@.+@..+/, 'Invalid email'],
+    match: [/.+\@.+\..+/, 'Invalid email'],
     trim: true,
     minlength: [1, 'Email must be at least 1 chars'],
     maxLength: [128, 'Email cannot be more than 128 chars'],
@@ -27,6 +27,8 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Last Login Date is required'],
   },
 });
+
+userSchema.index({ email: 1 }, { unique: true });
 
 userSchema.post('save', function (error, doc, next) {
   if (error.name === 'MongoError' && error.code === 11000) {
