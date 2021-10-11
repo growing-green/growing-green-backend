@@ -1,11 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { tokenSecretKey } = require('../configs');
-const {
-  BadRequestError,
-  InvalidTokenError,
-  TokenExpiredError,
-} = require('../lib/errors');
+const { BadRequestError } = require('../lib/errors');
 
 exports.getLoginOrSingUp = async (req, res, next) => {
   try {
