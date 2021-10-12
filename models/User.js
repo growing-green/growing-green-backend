@@ -18,11 +18,11 @@ const userSchema = new mongoose.Schema({
     maxLength: [15, 'Username cannot be more than 39 chars'],
     trim: true,
   },
-  photo_url: {
+  photoURL: {
     type: String,
     required: [true, 'Photo Url is required'],
   },
-  last_login_date: {
+  lastLoginDate: {
     type: Date,
     required: [true, 'Last Login Date is required'],
   },

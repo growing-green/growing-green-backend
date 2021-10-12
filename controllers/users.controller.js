@@ -1,15 +1,11 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { tokenSecretKey } = require('../configs');
-const {
-  BadRequestError,
-  InvalidTokenError,
-  TokenExpiredError,
-} = require('../lib/errors');
+const { BadRequestError } = require('../lib/errors');
 
 exports.getLoginOrSingUp = async (req, res, next) => {
   try {
-    const { email, name, photo_url } = req.body;
+    const { email, name, photoURL } = req.body;
     const targetUser = await User.findOne({ email });
     const user = {};
 
@@ -17,15 +13,15 @@ exports.getLoginOrSingUp = async (req, res, next) => {
       const newUser = await User.create({
         email,
         name,
-        photo_url,
-        last_login_date: new Date(),
+        photoURL,
+        lastLoginDate: new Date(),
       });
 
       user._id = newUser._id.toJSON();
       user.name = newUser.name;
       user.email = newUser.email;
-      user.photoURL = newUser.photo_url;
-      user.last_login_date = new Date();
+      user.photoURL = newUser.photoURL;
+      user.lastLoginDate = new Date();
 
       if (!newUser) {
         return next(new BadRequestError('회원가입에 실패했습니다.'));
@@ -38,13 +34,13 @@ exports.getLoginOrSingUp = async (req, res, next) => {
         user,
       });
     } else {
-      targetUser.last_login_date = new Date();
+      targetUser.lastLoginDate = new Date();
       await targetUser.save();
 
       user._id = targetUser._id.toJSON();
       user.name = targetUser.name;
       user.email = targetUser.email;
-      user.photoURL = targetUser.photo_url;
+      user.photoURL = targetUser.photoUrl;
 
       const token = jwt.sign(user, tokenSecretKey);
 

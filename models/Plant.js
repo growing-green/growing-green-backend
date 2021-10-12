@@ -6,38 +6,35 @@ const schemaOption = {
 };
 
 const sunGuageSchema = new mongoose.Schema({
-  default_guage: {
+  defaultGuage: {
     type: Number,
     required: [true, 'Default score is required'],
   },
-  current_guage: {
+  currentGuage: {
     type: Number,
     required: [true, 'Current score is required'],
     default: 0,
-    max: () => {
-      return this.default_guage;
-    },
   },
-  full_date: {
+  fullDate: {
     type: Date,
     default: null,
   },
-  empty_date: {
+  emptyDate: {
     type: Date,
     default: null,
   },
 });
 
 const wateringGuageSchema = new mongoose.Schema({
-  default_guage: {
+  defaultGuage: {
     type: Number,
     required: [true, 'Default score is required'],
   },
-  current_guage: {
+  currentGuage: {
     type: Number,
     required: [true, 'Current score is required'],
   },
-  empty_date: {
+  emptyDate: {
     type: Date,
     default: null,
   },
@@ -65,30 +62,30 @@ const plantSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    growth_stage: {
+    growthStage: {
       type: Number,
       enum: [1, 2, 3],
       required: [true, 'Growth stage is required'],
     },
-    penalty_points: {
+    penaltyPoints: {
       type: Number,
       default: 0,
       min: [0, 'Penalty points should be more than 1'],
       max: [10, 'Penalty points should be less than 10'],
     },
-    is_sunplant: {
+    isSunPlant: {
       type: Boolean,
       default: true,
       required: [true, 'Lighting environment is required'],
     },
-    last_window_open: {
+    lastWindowOpen: {
       type: Date,
       default: null,
     },
-    sun_guage: {
+    sunGuage: {
       type: sunGuageSchema,
     },
-    water_guage: {
+    waterGuage: {
       type: wateringGuageSchema,
     },
   },
