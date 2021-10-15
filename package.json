@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "start": "node ./bin/www",
     "lint": "eslint '**/*.js'",
     "lint:fix": "eslint '**/*.js' --fix",
     "prepare": "husky install"
@@ -11,6 +11,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "debug": "~2.6.9",
+    "dotenv": "^10.0.0",
     "express": "~4.16.1",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.1.2",
@@ -19,7 +20,6 @@
     "pug": "2.0.0-beta11"
   },
   "devDependencies": {
-    "dotenv": "^10.0.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
