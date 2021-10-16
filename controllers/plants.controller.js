@@ -54,7 +54,7 @@ exports.createNewPlant = async (req, res, next) => {
 
 exports.updatePlant = async (req, res, next) => {
   try {
-    const { plantId } = req.params;
+    const { id } = req.params;
     const { state, isIncrease } = req.body;
     console.log(state, isIncrease);
     const targetPlant = await Plant.findOne({ _id: plantId });
