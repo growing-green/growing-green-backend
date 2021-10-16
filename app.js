@@ -9,6 +9,7 @@ const { ERROR_MESSAGES } = require('./constants');
 
 const usersRouter = require('./routes/users');
 const plantsRouter = require('./routes/plants');
+const searchRouter = require('./routes/search');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/plants', plantsRouter);
 app.use('/', (req, res) => {
   res.send('connect!!!!');
 });
+app.use('/search', searchRouter);
 
 app.use(function (req, res, next) {
   next(new NotFoundError(req.url));
