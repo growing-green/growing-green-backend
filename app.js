@@ -20,12 +20,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/', (req, res) => {
+  res.send('connect!!!!');
+});
 app.use('/users', usersRouter);
 app.use('/plants', plantsRouter);
 app.use('/search', searchRouter);
 
 app.use(function (req, res, next) {
-  next(new NotFoundError());
+  next(new NotFoundError(req.url));
 });
 
 // eslint-disable-next-line no-unused-vars
