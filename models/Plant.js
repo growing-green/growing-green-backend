@@ -12,7 +12,6 @@ const sunGuageSchema = new mongoose.Schema({
   },
   currentGuage: {
     type: Number,
-    required: [true, 'Current score is required'],
     default: 0,
   },
   fullDate: {
@@ -32,7 +31,7 @@ const wateringGuageSchema = new mongoose.Schema({
   },
   currentGuage: {
     type: Number,
-    required: [true, 'Current score is required'],
+    default: 0,
   },
   emptyDate: {
     type: Date,
