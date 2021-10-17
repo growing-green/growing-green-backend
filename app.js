@@ -26,7 +26,6 @@ app.use('/search', searchRouter);
 app.use('/', (req, res) => {
   res.send('connect');
 });
-app.use('/search', searchRouter);
 
 app.use(function (req, res, next) {
   next(new NotFoundError(req.url));
