@@ -14,8 +14,11 @@ exports.getAllPlantsById = async (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
     const { _id } = await jwt.verify(token, tokenSecretKey);
     const plants = await Plant.find({ userId: _id }).lean();
+    const plantsWithTimeStamp = plants.map((plant) => {
+      return { ...plant, createAt: plant._id.getTimestamp() };
+    });
 
-    return res.status(201).json(plants);
+    return res.status(201).json(plantsWithTimeStamp);
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
       return next(new TokenExpiredError());
@@ -26,51 +29,67 @@ exports.getAllPlantsById = async (req, res, next) => {
 };
 
 exports.createNewPlant = async (req, res, next) => {
-  const newPlant = req.body;
+  const data = req.body;
   const token = req.headers.authorization.split(' ')[1];
   const { _id } = await jwt.verify(token, tokenSecretKey);
 
-  if (!newPlant) {
+  if (!data) {
     return next(new BadRequestError('식물 데이터가 유효하지 않습니다.'));
   }
 
   try {
-    const plant = await Plant.create({
+    const defaultSunGuage = data.isSunPlant ? 5 : 3;
+    const defaultWaterGuage = data.watering;
+
+    const newPlant = await Plant.create({
       userId: _id,
-      newPlant,
+      name: data.name,
+      species: data.species,
+      type: data.type,
+      isSunPlant: data.isSunPlant,
+      sunGuage: {
+        defaultGuage: defaultSunGuage,
+        currentGuage: defaultSunGuage,
+      },
+      waterGuage: {
+        defaultGuage: defaultWaterGuage,
+      },
+      growthStage: data.growthStage,
     });
 
+    console.log(newPlant.growthStage);
+
     res.json({
-      plant,
+      plant: newPlant,
     });
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
       return next(new BadRequestError(err.message));
     }
 
-    next(BaseError(err.message));
+    next(new BaseError(err.message));
   }
 };
 
 exports.updatePlant = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const { state, isIncrease } = req.body;
-    console.log(state, isIncrease);
-    const targetPlant = await Plant.findOne({ _id: plantId });
+    const { plantId } = req.params;
 
-    if (!targetPlant) {
-      return next(new BaseError());
+    if (!plantId) {
+      return next(new BadRequestError());
     }
+
+    const { state, isIncrease } = req.body;
+    const targetPlant = await Plant.findOne({ _id: plantId });
 
     switch (state) {
       case 'water': {
         if (isIncrease === true) {
-          targetPlant.water_guage.current_guage =
-            targetPlant.water_guage.current_guage + 1;
+          targetPlant.waterGuage.currentGuage =
+            targetPlant.waterGuage.currentGuage + 1;
         } else {
-          targetPlant.water_guage.current_guage =
-            targetPlant.water_guage.current_guage - 1;
+          targetPlant.waterGuage.currentGuage =
+            targetPlant.waterGuage.currentGuage - 1;
         }
 
         break;
@@ -78,28 +97,38 @@ exports.updatePlant = async (req, res, next) => {
 
       case 'sun': {
         if (isIncrease === true) {
-          targetPlant.sun_guage.current_guage =
-            targetPlant.sun_guage.current_guage + 1;
+          targetPlant.sunGuage.currentGuage =
+            targetPlant.sunGuage.currentGuage + 1;
         } else {
-          targetPlant.sun_guage.current_guage =
-            targetPlant.sun_guage.current_guage - 1;
+          targetPlant.sunGuage.currentGuage =
+            targetPlant.sunGuage.currentGuage - 1;
         }
 
         break;
       }
 
       case 'blind': {
-        targetPlant.is_blind_up = !targetPlant.is_blind_up;
+        targetPlant.isBlindUp = !targetPlant.isBlindUp;
+
+        if (targetPlant.isBlindUp === true) {
+          targetPlant.lastBlindUpDate = new Date();
+        }
 
         break;
       }
 
       case 'penalty': {
         if (isIncrease === true) {
-          targetPlant.penalty_points = targetPlant.penalty_points + 1;
+          targetPlant.penaltyPoints = targetPlant.penaltyPoints + 1;
         } else {
-          targetPlant.penalty_points = targetPlant.penalty_points - 1;
+          targetPlant.penaltyPoints = targetPlant.penaltyPoints - 1;
         }
+
+        break;
+      }
+
+      case 'dead': {
+        targetPlant.isDead = true;
 
         break;
       }
@@ -113,6 +142,45 @@ exports.updatePlant = async (req, res, next) => {
       return next(new BadRequestError('유효하지 않은 데이터입니다.'));
     }
 
+    next(new BaseError());
+  }
+};
+
+exports.updatePlantAll = async (req, res, next) => {
+  try {
+    const updatedPlants = req.body;
+
+    updatedPlants.forEach(async (plant) => {
+      const targetPlant = await Plant.findOne({ _id: plant._id });
+
+      targetPlant.growthState = plant.growthState;
+      targetPlant.penaltyPoints = plant.penaltyPoints;
+      targetPlant.waterGuage.currentGuage = plant.waterGuage.currentGuage;
+      targetPlant.sunGuage.currentGuage = plant.sunGuage.currentGuage;
+
+      await targetPlant.save();
+    });
+
+    return res.status(201).json({ plant: updatedPlants });
+  } catch (err) {
+    if (err instanceof mongoose.Error.ValidationError) {
+      return next(new BadRequestError('유효하지 않은 데이터입니다.'));
+    }
+
+    next(new BaseError());
+  }
+};
+
+exports.deletePlant = async (req, res, next) => {
+  const { plantId } = req.params;
+
+  if (!plantId) {
+    return next(new BadRequestError());
+  }
+
+  try {
+    await Plant.deleteOne({ _id: plantId });
+  } catch {
     next(new BaseError());
   }
 };
