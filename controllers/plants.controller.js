@@ -57,8 +57,6 @@ exports.createNewPlant = async (req, res, next) => {
       growthStage: data.growthStage,
     });
 
-    console.log(newPlant.growthStage);
-
     res.json({
       plant: newPlant,
     });
