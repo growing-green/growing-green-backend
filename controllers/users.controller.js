@@ -40,7 +40,7 @@ exports.getLoginOrSingUp = async (req, res, next) => {
       user._id = targetUser._id.toJSON();
       user.name = targetUser.name;
       user.email = targetUser.email;
-      user.photoURL = targetUser.photoUrl;
+      user.photoURL = targetUser.photoURL;
 
       const token = jwt.sign(user, tokenSecretKey);
 
