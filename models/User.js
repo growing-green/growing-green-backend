@@ -22,10 +22,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Photo Url is required'],
   },
-  lastLoginDate: {
-    type: Date,
-    required: [true, 'Last Login Date is required'],
-  },
 });
 
 userSchema.index({ email: 1 }, { unique: true });

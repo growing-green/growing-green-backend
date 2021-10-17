@@ -21,7 +21,6 @@ exports.getLoginOrSingUp = async (req, res, next) => {
       user.name = newUser.name;
       user.email = newUser.email;
       user.photoURL = newUser.photoURL;
-      user.lastLoginDate = new Date();
 
       if (!newUser) {
         return next(new BadRequestError('회원가입에 실패했습니다.'));
@@ -52,4 +51,4 @@ exports.getLoginOrSingUp = async (req, res, next) => {
   } catch(err) {
     next(new BadRequestError('로그인에 실패했습니다.'));
   }
-}
+};
