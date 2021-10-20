@@ -65,15 +65,15 @@ const plantSchema = new mongoose.Schema(
       default: true,
       required: [true, 'Lighting environment is required'],
     },
-    lastWindowOpen: {
-      type: Date,
-      default: null,
-    },
     sunGuage: {
       type: sunGuageSchema,
     },
     waterGuage: {
       type: wateringGuageSchema,
+    },
+    isDead: {
+      type: Boolean,
+      default: false,
     },
   },
   schemaOption,
