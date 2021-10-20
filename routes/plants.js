@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const plantsController = require('../controllers/plants.controller');
+const verifyToken = require('../middlewares/authorization');
 
-router.get('/', plantsController.getAllPlantsById);
+router.get('/', verifyToken, plantsController.getAllPlantsById);
 router.get('/popular', plantsController.getMostPopularPlants);
-router.post('/new', plantsController.createNewPlant);
-router.put('/:plantId', plantsController.updatePlant);
-router.put('/', plantsController.updatePlantAll);
-router.delete('/:plantId', plantsController.deletePlant);
+router.post('/new', verifyToken, plantsController.createNewPlant);
+router.put('/:plantId', verifyToken, plantsController.updatePlant);
+router.put('/', verifyToken, plantsController.updatePlantAll);
+router.delete('/:plantId', verifyToken, plantsController.deletePlant);
 
 module.exports = router;

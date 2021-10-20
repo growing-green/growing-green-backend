@@ -39,6 +39,7 @@ exports.getMostPopularPlants = async (req, res, next) => {
         numberOfPlants[species] += 1;
       } else {
         numberOfPlants[species] = 1;
+        popularPlants.push(species);
       }
     });
 
