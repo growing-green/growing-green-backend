@@ -28,6 +28,36 @@ exports.getAllPlantsById = async (req, res, next) => {
   }
 };
 
+exports.getMostPopularPlants = async (req, res, next) => {
+  try {
+    const allSpecies = await Plant.find({}, { _id: 0, species: 1 });
+    const popularPlants = [];
+    const numberOfPlants = {};
+
+    allSpecies.forEach(({ species }) => {
+      if (numberOfPlants[species]) {
+        numberOfPlants[species] += 1;
+      } else {
+        numberOfPlants[species] = 1;
+      }
+    });
+
+    const sortedPopularPlants = popularPlants.sort(
+      (a, b) => numberOfPlants[a] > numberOfPlants[b],
+    );
+
+    const topFivePlants = sortedPopularPlants.slice(0, 5);
+
+    return res.status(201).json(topFivePlants);
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      return next(new TokenExpiredError());
+    }
+
+    next(new InvalidTokenError());
+  }
+};
+
 exports.createNewPlant = async (req, res, next) => {
   const data = req.body;
   const token = req.headers.authorization.split(' ')[1];
