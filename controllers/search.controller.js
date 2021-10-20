@@ -8,8 +8,12 @@ exports.crawlPlantNames = async (req, res, next) => {
     if (!keyword.length) {
       next(new BadRequestError('검색어를 입력해주세요'));
     }
+    const browser = await puppeteer.launch({
+      executablePath: '/usr/bin/google-chrome-stable',
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
 
-    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     const searchUrl = 'https://www.treeinfo.net/plant/list.php';
 
@@ -25,10 +29,14 @@ exports.crawlPlantNames = async (req, res, next) => {
       const results = [];
 
       contents.forEach((result) => {
-        const title = result.innerText;
+        const name = result.innerText.replaceAll('\n', ' ').trim();
         const link = result.href;
+        const startIndex = link.indexOf('ti_no') + 6;
+        const endIndex = link.indexOf('&search');
 
-        results.push({ title, link });
+        const number = Number(link.slice(startIndex, endIndex));
+
+        results.push({ name, number });
       });
 
       return results;
@@ -37,7 +45,7 @@ exports.crawlPlantNames = async (req, res, next) => {
     await browser.close();
 
     return res.status(201).json({ data });
-  } catch (err) {
+  } catch {
     return next(new BaseError());
   }
 };
@@ -45,46 +53,66 @@ exports.crawlPlantNames = async (req, res, next) => {
 exports.crawlPlantInfo = async (req, res, next) => {
   try {
     const { number } = req.params;
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      executablePath: '/usr/bin/google-chrome-stable',
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
     const page = await browser.newPage();
     const scrapUrl = `https://www.treeinfo.net/plant/view.php?ti_no=${number}`;
-    const plantInfo = {};
 
     await page.goto(scrapUrl);
+    await page.waitForSelector('div.spec_text', { timeout: 10000 });
     await page.waitForSelector('div#div_gardening div', { timeout: 10000 });
 
-    const data = await page.evaluate(() => {
-      const contents = Array.from(
+    const plantData = await page.evaluate(() => {
+      const results = {};
+      const gardeningData = [];
+
+      const plantInfo = document.querySelector('div.spec_text');
+      const gardeningnfo = Array.from(
         document.querySelectorAll('div#div_gardening div'),
       );
-      const results = [];
 
-      contents.forEach((content) => {
+      const name = plantInfo.children[0].innerText;
+      const scientificName = plantInfo.children[1].innerText.split('\n')[1];
+      const englishName = plantInfo.children[2].innerText.split('\n')[1];
+      const species = plantInfo.children[3].innerText.split('\n')[1];
+
+      results.name = name;
+      results.scientificName = scientificName;
+      results.englishName = englishName;
+      results.species = species;
+
+      gardeningnfo.forEach((content) => {
         const info = content.innerText.trim().split('\n')[1];
 
-        results.push(info);
+        gardeningData.push(info);
       });
+
+      const sunData = gardeningData[0];
+      const waterData = gardeningData[1];
+
+      if (sunData && sunData.includes('음지')) {
+        results.isSunPlant = false;
+      } else {
+        results.isSunPlant = true;
+      }
+
+      if (waterData && waterData.includes('1')) {
+        results.watering = 1;
+      } else if (waterData && waterData.includes('3')) {
+        results.watering = 3;
+      } else {
+        results.watering = 5;
+      }
 
       return results;
     });
 
-    if (data[0].includes('양지')) {
-      plantInfo.isSun = true;
-    } else {
-      plantInfo.inSun = false;
-    }
-
-    if (data[1].includes('5')) {
-      plantInfo.watering = 5;
-    } else if (data[1].inCludes('3')) {
-      plantInfo.watering = 3;
-    } else {
-      plantInfo.watering = 1;
-    }
-
     await browser.close();
 
-    return res.status(201).json({ plantInfo });
+    return res.status(201).json({ plantData });
   } catch {
     return next(new BaseError());
   }
