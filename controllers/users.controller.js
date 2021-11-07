@@ -48,7 +48,7 @@ exports.getLoginOrSingUp = async (req, res, next) => {
         user,
       });
     }
-  } catch(err) {
+  } catch (err) {
     next(new BadRequestError('로그인에 실패했습니다.'));
   }
 };

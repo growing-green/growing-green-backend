@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { tokenSecretKey } = require('../configs/index');
+const { tokenSecretKey } = require('../configs');
 
 const { TokenExpiredError, InvalidTokenError } = require('../lib/errors');
 
