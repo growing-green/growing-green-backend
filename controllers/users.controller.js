@@ -48,11 +48,7 @@ exports.getLoginOrSingUp = async (req, res, next) => {
         user,
       });
     }
-<<<<<<< HEAD
   } catch (err) {
-=======
-  } catch(err) {
->>>>>>> ff5fda6 (Feat: add search router)
     next(new BadRequestError('로그인에 실패했습니다.'));
   }
-}
+};
