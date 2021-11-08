@@ -14,14 +14,6 @@ const sunGuageSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  fullDate: {
-    type: Date,
-    default: null,
-  },
-  emptyDate: {
-    type: Date,
-    default: null,
-  },
 });
 
 const wateringGuageSchema = new mongoose.Schema({
@@ -32,10 +24,6 @@ const wateringGuageSchema = new mongoose.Schema({
   currentGuage: {
     type: Number,
     default: 0,
-  },
-  emptyDate: {
-    type: Date,
-    default: null,
   },
 });
 
@@ -77,15 +65,15 @@ const plantSchema = new mongoose.Schema(
       default: true,
       required: [true, 'Lighting environment is required'],
     },
-    lastWindowOpen: {
-      type: Date,
-      default: null,
-    },
     sunGuage: {
       type: sunGuageSchema,
     },
     waterGuage: {
       type: wateringGuageSchema,
+    },
+    isDead: {
+      type: Boolean,
+      default: false,
     },
   },
   schemaOption,
