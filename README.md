@@ -1,5 +1,5 @@
 # **Growing Green 🪴**
-온라인상에서 가상의 반려 식물을 키울 수 있는 식물 키우기 시뮬레이션 게임입니다.
+온라인상에서 가상의 반려 식물을 키울 수 있는 **식물 키우기 시뮬레이션 게임**입니다.
 
 <img width="970" alt="landing-page" src="https://user-images.githubusercontent.com/43979066/140797763-f979fa1e-a6d1-4a43-818b-9cf7d5369307.gif">
 
@@ -12,7 +12,7 @@
 - [🕋 STACK](#-STACK)
 - [🕹 USAGE](#-USAGE)
 - [🌵 DEPLOY](#-DEPLOY)
-- [🌳 PROJECT LOG](#-PROJECT-LOG)
+- [🌳 TECHNICAL LOG](#-TECHNICAL-LOG)
 - [💡 THINGS TO DO](#-THINGS-TO-DO)
 
 <br>
@@ -46,7 +46,7 @@
 
 <br>
 
-# **🛠FEATURES**
+# **🛠 FEATURES**
 
 - Firebase 소셜 로그인 및 JSON Web Token을 이용한 사용자 인증
 - 로그인 상태별 관리를 위한 Private Route 구현
@@ -242,8 +242,6 @@ Firebase를 이용한 구글 로그인 구현중 Firebase라이브러리에서 �
 꽤 많은 시간을 허비하고나서 알고보니 Firebase 라이브러리 버전 업데이트로 인한 문제였습니다. Firebase의 Release Note를 살펴보니 불과 얼마 전 `8.x.x`에서 `9.x.x`으로 major한 업데이트가 있었고 firebase 객체를 임포트하는 로직에도 변화가 있었습니다. 업데이트된 버전에 맞추어 로직을 수정함으써 문제를 해결할 수 있었습니다.  
 
 앞으로 라이브러리를 사용하기 전에 꼭 Github Issue페이지와 버전 업데이트 내역에 대해서도 꼼꼼히 살펴본 후 사용해야겠다는 다짐을 하게 되었습니다.
-
-### **MSW를 이용하여 API 요청 Mocking하기**
 
 <br>
 
