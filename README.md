@@ -106,9 +106,10 @@
 - Error Handling
   - React: React Error Boundary를 이용한 에러 핸들링 
   - Express: Custom Error Class를 이용한 에러 핸들링
-  
+
 - Test Case
-  - FrontEnd: Unit | Reducer Test 작성
+  - FrontEnd: Unit | Reducer | E2E Test 작성
+    <img width="900" alt="landing-page" src="https://user-images.githubusercontent.com/43979066/143600266-c542c12d-3595-4e60-adb3-6ed78106542b.gif">
   - BackEnd: Unit Test 작성
 
 <br>
@@ -255,10 +256,10 @@ Firebase를 이용한 구글 로그인 구현중 Firebase라이브러리에서 �
   
   한 번 이상 검색된 식물은 DB에 저장하기
 
-- **통합 테스트 작성하기**
-  
-  - 상위 컴포넌트 단에서 Integration 테스트작성하기
-  - 브라우저 환경에서 어플리케이션의 전체 동작을 테스트하는 E2E 테스트 작성하기
+- **통합 테스트 작성하기**(완료)
+
+  - ~~상위 컴포넌트 단에서 Integration 테스트작성하기~~
+  - ~~브라우저 환경에서 어플리케이션의 전체 동작을 테스트하는 E2E 테스트 작성하기~~
   
 - **외부 사이트에 대한 의존도 줄이기**
 
